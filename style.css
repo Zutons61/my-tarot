@@ -307,7 +307,7 @@ body, html {
 
 .final-btns-row {
     position: absolute;
-    bottom: 70px;
+    bottom: 80px;
     left: 50%;
     transform: translateX(-50%);
     width: auto;
@@ -320,7 +320,7 @@ body, html {
 .btn-mini-wrap {
     position: relative;
     cursor: pointer;
-    width: 150px;
+    width: 160px;
     height: auto;
 }
 
