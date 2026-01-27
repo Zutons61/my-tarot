@@ -8,59 +8,59 @@
     <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
 </head>
 <body>
-    <div id="app-container">
+    <div id="stage">
         <div id="app">
             <section id="page-1" class="page active">
-                <img src="./images/bg_01.jpg" class="layer-full">
-                <img src="./images/gif/char_main_1.apng" class="layer-full">
-                <div class="btn-wrap main-btn-pos" onclick="nextPage(2)">
-                    <div class="gold-aura"></div>
-                    <img src="./images/btn/btn_start.png" class="btn-img">
+                <img src="./images/bg_01.jpg" class="full-layer">
+                <img src="./images/gif/char_main_1.apng" class="full-layer">
+                <div class="btn-anchor main-pos" onclick="nextPage(2)">
+                    <div class="aura-effect"></div>
+                    <img src="./images/btn/btn_start.png" class="origin-btn">
                 </div>
             </section>
 
             <section id="page-2" class="page">
-                <img src="./images/bg_02.jpg" class="layer-full">
-                <img src="./images/gif/char_select_1.apng" class="layer-full">
-                <div class="roulette-outer">
+                <img src="./images/bg_02.jpg" class="full-layer">
+                <img src="./images/gif/char_select_1.apng" class="full-layer">
+                <div class="roulette-section">
                     <div class="slider-container" id="slider">
                         <div class="card-track" id="track"></div>
                     </div>
                 </div>
-                <div class="btn-wrap pick-btn-pos" onclick="pickCard()">
-                    <div class="gold-aura"></div>
-                    <img src="./images/btn/btn_start.png" class="btn-img">
+                <div class="btn-anchor pick-pos" onclick="pickCard()">
+                    <div class="aura-effect"></div>
+                    <img src="./images/btn/btn_start.png" class="origin-btn">
                 </div>
             </section>
 
             <section id="page-3" class="page">
-                <img src="./images/bg_03.jpg" class="layer-full">
-                <img src="./images/gif/char_load_1.apng" class="layer-full">
-                <div class="magic-loader"></div>
+                <img src="./images/bg_03.jpg" class="full-layer">
+                <img src="./images/gif/char_load_1.apng" class="full-layer">
+                <div class="loading-aura"></div>
             </section>
 
             <section id="page-4" class="page">
-                <img id="res-bg-4" src="" class="layer-full">
-                <img id="res-char-4" src="" class="layer-full">
-                <div class="btn-wrap check-btn-pos" onclick="nextPage(5)">
-                    <div class="gold-aura"></div>
-                    <img src="./images/btn/btn_check.png" class="btn-img">
+                <img id="res-bg-4" src="" class="full-layer">
+                <img id="res-char-4" src="" class="full-layer">
+                <div class="btn-anchor check-pos" onclick="nextPage(5)">
+                    <div class="aura-effect"></div>
+                    <img src="./images/btn/btn_check.png" class="origin-btn">
                 </div>
             </section>
 
             <section id="page-5" class="page">
                 <div id="capture-area">
-                    <img id="res-bg-5" src="" class="layer-full">
-                    <img id="res-char-5" src="" class="layer-full">
-                    <div id="confetti-canvas"></div>
+                    <img id="res-bg-5" src="" class="full-layer">
+                    <img id="res-char-5" src="" class="full-layer">
+                    <div id="fanfare-box"></div>
                 </div>
                 <div class="final-btns">
-                    <div class="btn-wrap" onclick="saveImage()">
-                        <div class="gold-aura"></div>
-                        <img src="./images/btn/btn_save.png" class="btn-sub-img">
+                    <div class="btn-anchor side-btn" onclick="saveImage()">
+                        <div class="aura-effect small"></div>
+                        <img src="./images/btn/btn_save.png" class="origin-btn">
                     </div>
-                    <div class="btn-wrap" onclick="location.reload()">
-                        <img src="./images/btn/btn_retry.png" class="btn-sub-img">
+                    <div class="btn-anchor side-btn" onclick="location.reload()">
+                        <img src="./images/btn/btn_retry.png" class="origin-btn">
                     </div>
                 </div>
             </section>

@@ -1,43 +1,43 @@
-/* 반응형 컨테이너: 412*914 비율 유지하며 화면에 맞춤 */
+/* 1. 반응형 스케일링 설정 */
 :root {
-    --app-width: 412px;
-    --app-height: 914px;
+    --w: 412px;
+    --h: 914px;
 }
 
 body, html {
     margin: 0;
     padding: 0;
     width: 100%;
-    height: 100%;
-    overflow: hidden;
-    background: #1a1a1a;
+    height: 100dvh;
+    background: #111;
     display: flex;
     justify-content: center;
     align-items: center;
 }
 
-#app-container {
+#stage {
     width: 100%;
     height: 100%;
     display: flex;
     justify-content: center;
     align-items: center;
+    overflow: hidden;
 }
 
 #app {
-    width: var(--app-width);
-    height: var(--app-height);
+    width: var(--w);
+    height: var(--h);
     position: relative;
-    overflow: hidden;
-    background: #000;
-    /* 모바일 반응형 핵심: 화면 크기에 맞춰 스케일 조정 */
-    transform: scale(min(calc(100vw / 412), calc(100vh / 914)));
+    /* 스크립트에서 계산된 스케일이 적용됨 */
     transform-origin: center;
+    /* overflow: hidden; 을 제거하여 확대된 카드나 아우라가 잘리지 않게 함 */
 }
 
-/* 레이어 시스템: 배경과 캐릭터가 동일 크기(412*914)로 겹침 */
+/* 2. 레이어 시스템 (412*914 일치) */
 .page {
     position: absolute;
+    top: 0;
+    left: 0;
     width: 100%;
     height: 100%;
     display: none;
@@ -50,105 +50,110 @@ body, html {
         opacity: 1;
     }
 
-.layer-full {
+.full-layer {
     position: absolute;
     top: 0;
     left: 0;
-    width: 100%;
-    height: 100%;
+    width: var(--w);
+    height: var(--h);
     object-fit: cover;
+    pointer-events: none;
 }
 
-/* 버튼 주변 효과: 기존 이미지 디자인 유지 */
-.btn-wrap {
+/* 3. 버튼 아우라 (잘림 방지) */
+.btn-anchor {
     position: absolute;
-    transform: translateX(-50%);
     left: 50%;
-    z-index: 20;
+    transform: translateX(-50%);
+    z-index: 50;
     cursor: pointer;
 }
 
-.gold-aura {
+.origin-btn {
+    display: block;
+    width: 280px;
+    height: auto;
+    position: relative;
+    z-index: 2;
+}
+
+.side-btn .origin-btn {
+    width: 160px;
+}
+
+/* 버튼 주변 빛 번짐 효과 (전방향으로 퍼지도록 여유 공간 확보) */
+.aura-effect {
     position: absolute;
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    width: 120%;
-    height: 120%;
-    background: radial-gradient(circle, rgba(255,215,0,0.4) 0%, transparent 70%);
-    animation: aura-pulse 2s infinite;
-    z-index: -1;
+    width: 200%;
+    height: 200%; /* 버튼보다 크게 설정 */
+    background: radial-gradient(circle, rgba(255,223,0,0.5) 0%, rgba(255,223,0,0) 70%);
+    z-index: 1;
+    animation: aura-glow 2s infinite;
     pointer-events: none;
 }
 
-@keyframes aura-pulse {
+@keyframes aura-glow {
     0%, 100% {
-        opacity: 0.4;
-        transform: translate(-50%, -50%) scale(1);
+        opacity: 0.3;
+        transform: translate(-50%, -50%) scale(0.8);
     }
 
     50% {
-        opacity: 0.8;
-        transform: translate(-50%, -50%) scale(1.2);
+        opacity: 0.7;
+        transform: translate(-50%, -50%) scale(1.1);
     }
 }
 
-.btn-img {
-    width: 280px;
-    height: auto;
-}
-
-.btn-sub-img {
-    width: 160px;
-    height: auto;
-}
-
-/* 버튼 위치 */
-.main-btn-pos {
+.main-pos {
     bottom: 80px;
 }
 
-.pick-btn-pos {
+.pick-pos {
     bottom: 60px;
 }
 
-.check-btn-pos {
+.check-pos {
     bottom: 80px;
 }
 
 .final-btns {
     position: absolute;
-    bottom: 45px;
+    bottom: 50px;
     width: 100%;
     display: flex;
     justify-content: center;
     gap: 15px;
 }
 
-/* 무한 룰렛: 위쪽 잘림 방지 */
-.roulette-outer {
+/* 4. 무한 룰렛 (위아래 잘림 해결) */
+.roulette-section {
     position: absolute;
-    bottom: 180px;
+    bottom: 200px;
     width: 100%;
-    height: 350px;
+    height: 350px; /* 카드가 확대되어도 충분히 수용 가능한 높이 */
     display: flex;
-    align-items: flex-end;
+    align-items: center;
+    overflow: visible; /* 자식 요소의 확장을 허용 */
 }
 
 .slider-container {
     width: 100%;
     overflow-x: auto;
     scroll-snap-type: x mandatory;
-    padding-bottom: 20px;
+    padding: 50px 0;
 }
-
+    /* 패딩으로 확대 공간 확보 */
     .slider-container::-webkit-scrollbar {
         display: none;
     }
 
 .card-track {
     display: flex;
-    padding: 0 137px;
+    padding: 0 calc(var(--w) / 2 - 68px);
+    overflow: visible;
 }
 
 .card-item {
@@ -157,45 +162,45 @@ body, html {
     height: 210px;
     scroll-snap-align: center;
     transition: 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-    filter: brightness(0.6);
-    transform: scale(0.9);
+    filter: brightness(0.5);
+    transform: scale(0.85);
+    position: relative;
 }
-
+    /* 선택된 카드 확대 및 위아래 잘림 방지 */
     .card-item.selected {
         filter: brightness(1.2);
         transform: scale(1.25);
-        z-index: 10;
-        filter: drop-shadow(0 0 15px gold);
+        z-index: 100;
+        filter: drop-shadow(0 0 20px rgba(255,215,0,0.8));
     }
 
-/* 빵빠레 효과: 지그재그 낙하 */
+/* 5. 빵빠레 (곡선 낙하) */
 .confetti {
     position: absolute;
-    width: 12px;
-    height: 12px;
-    z-index: 15;
-    animation: confetti-fall 4s linear forwards;
+    z-index: 10;
+    animation: confetti-dance 4s linear forwards;
 }
 
-@keyframes confetti-fall {
+@keyframes confetti-dance {
     0% {
-        transform: translateY(-20px) translateX(0) rotate(0);
+        transform: translate(0, 0) rotate(0deg);
+        opacity: 1;
     }
 
     25% {
-        transform: translateY(220px) translateX(30px) rotate(180deg);
+        transform: translate(30px, 200px) rotate(90deg);
     }
 
     50% {
-        transform: translateY(450px) translateX(-30px) rotate(360deg);
+        transform: translate(-30px, 450px) rotate(180deg);
     }
 
     75% {
-        transform: translateY(680px) translateX(30px) rotate(540deg);
+        transform: translate(30px, 700px) rotate(270deg);
     }
 
     100% {
-        transform: translateY(920px) translateX(0) rotate(720deg);
+        transform: translate(0, 950px) rotate(360deg);
         opacity: 0;
     }
 }
