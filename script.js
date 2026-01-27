@@ -20,11 +20,11 @@ function startLoading() {
     setTimeout(() => {
         // 4페이지 배경 및 캐릭터
         document.getElementById('res-bg-4').src = `images/bg_res_4-${selectedIdx}.jpg`;
-        document.getElementById('res-char-4').src = `images/gif/char_check_${selectedIdx}.gif`;
+        document.getElementById('res-char-4').src = `images/gif/char_check_${selectedIdx}.apng`;
         
         // 5페이지 결과 미리 로드
         document.getElementById('res-bg-5').src = `images/bg_res_5-${selectedIdx}.jpg`;
-        document.getElementById('res-char-5').src = `images/gif/char_final_${selectedIdx}.gif`;
+        document.getElementById('res-char-5').src = `images/gif/char_final_${selectedIdx}.apng`;
         
         nextPage(4);
     }, 4000);
