@@ -161,7 +161,7 @@ body, html {
 /* 5. 5페이지 버튼 (둘 다 보이게 수정) */
 .final-btns-row {
     position: absolute;
-    bottom: 70px;
+    bottom: 80px;
     left: 0;
     width: var(--w);
     display: flex;
@@ -173,7 +173,7 @@ body, html {
 .btn-mini-wrap {
     position: relative;
     cursor: pointer;
-    width: 150px;
+    width: 160px;
 }
 
 .mini-btn-img {
