@@ -1,52 +1,39 @@
-/* 기본 설정 */
-body, html { margin: 0; padding: 0; width: 100%; height: 100%; overflow: hidden; background: #000; font-family: sans-serif; }
-#app { width: 100%; height: 100%; position: relative; max-width: 500px; margin: 0 auto; overflow: hidden; }
+/* 기초 및 레이아웃 */
+body, html { margin: 0; padding: 0; width: 100%; height: 100%; overflow: hidden; background: #111; }
+#app { width: 100%; height: 100%; position: relative; max-width: 480px; margin: 0 auto; box-shadow: 0 0 50px rgba(0,0,0,0.5); }
 
-/* 페이지 전환 */
-.page { position: absolute; width: 100%; height: 100%; display: none; opacity: 0; transition: opacity 0.6s ease; }
-.page.active { display: block; opacity: 1; }
+/* 페이지 전환 애니메이션 */
+.page { position: absolute; width: 100%; height: 100%; display: none; opacity: 0; transform: scale(1.1); transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1); }
+.page.active { display: block; opacity: 1; transform: scale(1); }
 .full-bg { width: 100%; height: 100%; object-fit: cover; position: absolute; top:0; left:0; }
 
-/* 캐릭터 공통 (위치/크기 조절 주석 참고) */
+/* 1페이지 줌 효과 */
+.zoom-bg { animation: zoomBg 10s infinite alternate; }
+@keyframes zoomBg { from { transform: scale(1); } to { transform: scale(1.1); } }
+
+/* 캐릭터 공통 애니메이션 */
 .char { position: absolute; z-index: 10; transform: translateX(-50%); pointer-events: none; }
-.char-1 { top: 35%; left: 50%; width: 55%; } 
-.char-2 { top: 15%; left: 50%; width: 50%; }
-.char-3 { top: 40%; left: 50%; width: 45%; }
-.char-4 { top: 25%; left: 50%; width: 45%; }
-.char-5 { width: 100%; height: auto; } /* 박스 안 캐릭터 */
+.floating { top: 30%; left: 50%; width: 60%; animation: float 3s infinite ease-in-out; }
+@keyframes float { 0%, 100% { transform: translate(-50%, 0); } 50% { transform: translate(-50%, -20px); } }
 
-/* 5페이지 캐릭터 박스 */
-.top-char-box { position: absolute; top: 8%; left: 50%; transform: translateX(-50%); width: 140px; z-index: 20; }
+/* 2페이지 무한 룰렛 슬라이더 */
+.slider-container { position: absolute; bottom: 20%; width: 100%; overflow-x: auto; scroll-snap-type: x mandatory; -webkit-overflow-scrolling: touch; z-index: 20; }
+.slider-container::-webkit-scrollbar { display: none; }
+.card-track { display: flex; padding: 0 33.33vw; }
+.card-item { flex: 0 0 33.33vw; width: 33.33vw; scroll-snap-align: center; transition: 0.3s; filter: brightness(0.6); }
+.card-item.active { filter: brightness(1.2); transform: scale(1.1) translateY(-10px); }
 
-/* ★ 카드 슬라이드 (Scroll Snap) ★ */
-.card-slider {
-    position: absolute; bottom: 15%; width: 100%;
-    overflow-x: auto; overflow-y: hidden;
-    scroll-snap-type: x mandatory;
-    -webkit-overflow-scrolling: touch;
-    z-index: 30;
-}
-.card-slider::-webkit-scrollbar { display: none; } /* 스크롤바 숨기기 */
+/* 3페이지 마법진 연출 */
+.magic-circle { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 300px; height: 300px; border: 2px dashed rgba(255,255,255,0.3); border-radius: 50%; animation: rotate 5s linear infinite; }
+@keyframes rotate { from { transform: translate(-50%, -50%) rotate(0deg); } to { transform: translate(-50%, -50%) rotate(360deg); } }
 
-.card-list { display: inline-flex; padding: 0 25%; gap: 20px; }
-.card-item { 
-    flex: 0 0 auto; width: 180px; height: auto; 
-    scroll-snap-align: center; cursor: pointer;
-    transition: transform 0.3s;
-}
-.card-item:active { transform: scale(0.95); }
+/* 공통 버튼 효과 */
+.btn-img { position: absolute; bottom: 10%; left: 50%; transform: translateX(-50%); width: 65%; cursor: pointer; z-index: 30; }
+.pulse { animation: pulse 1.5s infinite; }
+@keyframes pulse { 0% { transform: translateX(-50%) scale(1); } 50% { transform: translateX(-50%) scale(1.05); } 100% { transform: translateX(-50%) scale(1); } }
 
-/* 반짝임 효과 */
-.sparkle { animation: shine 2s infinite; }
-@keyframes shine { 
-    0%, 100% { filter: brightness(1); } 50% { filter: brightness(1.3) drop-shadow(0 0 10px gold); } 
-}
-
-/* 버튼 배치 */
-.btn-img { position: absolute; cursor: pointer; transform: translateX(-50%); z-index: 40; }
-.btn-start { bottom: 10%; left: 50%; width: 65%; }
-.btn-check { bottom: 8%; left: 50%; width: 55%; }
-.bottom-btn-group { position: absolute; bottom: 5%; width: 100%; display: flex; justify-content: center; gap: 15px; z-index: 40; }
-.btn-img-small { width: 40%; cursor: pointer; }
-
-.slide-hint { position: absolute; bottom: 8%; width: 100%; text-align: center; color: #fff; font-size: 0.8rem; z-index: 30; }
+/* 5페이지 설정 */
+.confetti-canvas { position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 15; }
+.char-box-final { position: absolute; top: 10%; left: 50%; transform: translateX(-50%); width: 140px; z-index: 20; }
+.btn-group-final { position: absolute; bottom: 5%; width: 100%; display: flex; justify-content: center; gap: 15px; z-index: 30; }
+.btn-small { width: 40%; cursor: pointer; }
