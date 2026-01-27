@@ -1,24 +1,22 @@
 let selectedIdx = 1;
 
 function nextPage(num) {
-    const pages = document.querySelectorAll('.page');
-    pages.forEach(p => p.classList.remove('active'));
+    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
     setTimeout(() => {
-        pages.forEach(p => p.style.display = 'none');
+        document.querySelectorAll('.page').forEach(p => p.style.display = 'none');
         const next = document.getElementById(`page-${num}`);
         next.style.display = 'block';
         setTimeout(() => next.classList.add('active'), 50);
-    }, 400);
-
-    if (num === 2) initInfiniteSlider();
+        if (num === 2) initInfiniteSlider();
+        if (num === 5) triggerFanfare();
+    }, 300);
 }
 
-// 룰렛 무한 루프 핵심 로직
+// 무한 슬라이더: 30세트(90장)로 대폭 확장하여 버그 방지
 function initInfiniteSlider() {
     const track = document.getElementById('track');
     track.innerHTML = '';
-    // 카드 3장을 15세트 복제 (충분한 길이 확보)
-    for (let i = 0; i < 15; i++) {
+    for (let i = 0; i < 30; i++) {
         for (let j = 1; j <= 3; j++) {
             const img = document.createElement('img');
             img.src = `./images/btn/btn_card_back${j}.png`;
@@ -27,37 +25,29 @@ function initInfiniteSlider() {
             track.appendChild(img);
         }
     }
-
     const slider = document.getElementById('slider');
-    // 초기 위치를 중간으로 설정
-    slider.scrollLeft = slider.scrollWidth / 2;
+    slider.scrollLeft = slider.scrollWidth / 2; // 중간부터 시작
 
     slider.addEventListener('scroll', () => {
-        const scrollWidth = slider.scrollWidth;
-        const currentScroll = slider.scrollLeft;
-        
-        // 무한 루프: 양쪽 끝에 도달하기 전 중간으로 텔레포트
-        if (currentScroll < 100) {
-            slider.scrollLeft = scrollWidth / 2;
-        } else if (currentScroll > scrollWidth - window.innerWidth - 100) {
-            slider.scrollLeft = scrollWidth / 2;
-        }
-        
+        // 무한 텔레포트 로직
+        if (slider.scrollLeft < 200) slider.scrollLeft = slider.scrollWidth / 2;
+        if (slider.scrollLeft > slider.scrollWidth - 600) slider.scrollLeft = slider.scrollWidth / 2;
+
         updateActiveCard();
     });
 }
 
 function updateActiveCard() {
     const cards = document.querySelectorAll('.card-item');
-    const centerX = window.innerWidth / 2;
+    const centerX = 412 / 2;
     cards.forEach(card => {
         const rect = card.getBoundingClientRect();
-        const cardCenter = rect.left + rect.width / 2;
-        if (Math.abs(centerX - cardCenter) < rect.width / 2) {
-            card.classList.add('active');
-            selectedIdx = parseInt(card.dataset.id); // 중앙 카드 번호 실시간 저장
+        const cardMid = rect.left + rect.width / 2;
+        if (Math.abs(centerX - cardMid) < 50) {
+            card.classList.add('selected');
+            selectedIdx = parseInt(card.dataset.id);
         } else {
-            card.classList.remove('active');
+            card.classList.remove('selected');
         }
     });
 }
@@ -65,13 +55,28 @@ function updateActiveCard() {
 function pickCard() {
     nextPage(3);
     setTimeout(() => {
-        // 4, 5페이지 리소스 동적 매칭
         document.getElementById('res-bg-4').src = `./images/bg_res_4-${selectedIdx}.jpg`;
         document.getElementById('res-char-4').src = `./images/gif/char_check_${selectedIdx}.apng`;
         document.getElementById('res-bg-5').src = `./images/bg_res_5-${selectedIdx}.jpg`;
         document.getElementById('res-char-5').src = `./images/gif/char_final_${selectedIdx}.apng`;
         nextPage(4);
     }, 4000);
+}
+
+// 5페이지 빵빠레 연출
+function triggerFanfare() {
+    const container = document.getElementById('fanfare-container');
+    const colors = ['#f9f295', '#d4af37', '#ff4d4d', '#4dff4d', '#4db8ff'];
+    for (let i = 0; i < 100; i++) {
+        const div = document.createElement('div');
+        div.className = 'confetti';
+        div.style.left = Math.random() * 412 + 'px';
+        div.style.top = '-10px';
+        div.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+        div.style.transform = `rotate(${Math.random() * 360}deg)`;
+        container.appendChild(div);
+        setTimeout(() => div.remove(), 3000);
+    }
 }
 
 function saveImage() {
