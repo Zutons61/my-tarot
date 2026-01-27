@@ -8,46 +8,63 @@
     <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
 </head>
 <body>
-    <div id="app">
-        <section id="page-1" class="page active">
-            <img src="./images/bg_01.jpg" class="layer-bg">
-            <img src="./images/gif/char_main_1.apng" class="layer-char">
-            <div class="btn-gold-sparkle main-btn-pos" onclick="nextPage(2)">행운 가득 카드 뽑기</div>
-        </section>
-
-        <section id="page-2" class="page">
-            <img src="./images/bg_02.jpg" class="layer-bg">
-            <img src="./images/gif/char_select_1.apng" class="layer-char">
-            <div class="roulette-container" id="slider">
-                <div class="card-track" id="track">
+    <div id="app-container">
+        <div id="app">
+            <section id="page-1" class="page active">
+                <img src="./images/bg_01.jpg" class="layer-full">
+                <img src="./images/gif/char_main_1.apng" class="layer-full">
+                <div class="btn-wrap main-btn-pos" onclick="nextPage(2)">
+                    <div class="gold-aura"></div>
+                    <img src="./images/btn/btn_start.png" class="btn-img">
                 </div>
-            </div>
-            <div class="selection-box"></div> <div class="btn-gold-sparkle pick-btn-pos" onclick="pickCard()">카드 선택하기</div>
-        </section>
+            </section>
 
-        <section id="page-3" class="page">
-            <img src="./images/bg_03.jpg" class="layer-bg">
-            <img src="./images/gif/char_load_1.apng" class="layer-char">
-            <div class="magic-circle"></div>
-        </section>
+            <section id="page-2" class="page">
+                <img src="./images/bg_02.jpg" class="layer-full">
+                <img src="./images/gif/char_select_1.apng" class="layer-full">
+                <div class="roulette-outer">
+                    <div class="slider-container" id="slider">
+                        <div class="card-track" id="track"></div>
+                    </div>
+                </div>
+                <div class="btn-wrap pick-btn-pos" onclick="pickCard()">
+                    <div class="gold-aura"></div>
+                    <img src="./images/btn/btn_start.png" class="btn-img">
+                </div>
+            </section>
 
-        <section id="page-4" class="page">
-            <img id="res-bg-4" src="" class="layer-bg">
-            <img id="res-char-4" src="" class="layer-char">
-            <div class="btn-gold-sparkle check-btn-pos" onclick="nextPage(5)">결과 확인하기</div>
-        </section>
+            <section id="page-3" class="page">
+                <img src="./images/bg_03.jpg" class="layer-full">
+                <img src="./images/gif/char_load_1.apng" class="layer-full">
+                <div class="magic-loader"></div>
+            </section>
 
-        <section id="page-5" class="page">
-            <div id="capture-area">
-                <img id="res-bg-5" src="" class="layer-bg">
-                <img id="res-char-5" src="" class="layer-char">
-                <div id="fanfare-container"></div>
-            </div>
-            <div class="final-btn-group">
-                <img src="./images/btn/btn_save.png" class="btn-indiv" onclick="saveImage()">
-                <img src="./images/btn/btn_retry.png" class="btn-indiv" onclick="location.reload()">
-            </div>
-        </section>
+            <section id="page-4" class="page">
+                <img id="res-bg-4" src="" class="layer-full">
+                <img id="res-char-4" src="" class="layer-full">
+                <div class="btn-wrap check-btn-pos" onclick="nextPage(5)">
+                    <div class="gold-aura"></div>
+                    <img src="./images/btn/btn_check.png" class="btn-img">
+                </div>
+            </section>
+
+            <section id="page-5" class="page">
+                <div id="capture-area">
+                    <img id="res-bg-5" src="" class="layer-full">
+                    <img id="res-char-5" src="" class="layer-full">
+                    <div id="confetti-canvas"></div>
+                </div>
+                <div class="final-btns">
+                    <div class="btn-wrap" onclick="saveImage()">
+                        <div class="gold-aura"></div>
+                        <img src="./images/btn/btn_save.png" class="btn-sub-img">
+                    </div>
+                    <div class="btn-wrap" onclick="location.reload()">
+                        <img src="./images/btn/btn_retry.png" class="btn-sub-img">
+                    </div>
+                </div>
+            </section>
+        </div>
     </div>
     <script src="./script.js"></script>
 </body>
