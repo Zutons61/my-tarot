@@ -1,4 +1,3 @@
-/* 1. 반응형 스케일링 설정 */
 :root {
     --w: 412px;
     --h: 914px;
@@ -9,31 +8,31 @@ body, html {
     padding: 0;
     width: 100%;
     height: 100dvh;
-    background: #111;
-    display: flex;
-    justify-content: center;
-    align-items: center;
+    background: #000;
+    overflow: hidden;
 }
 
+/* 1. 반응형 중앙 정렬 핵심: Stage가 App을 완벽하게 가둠 */
 #stage {
-    width: 100%;
-    height: 100%;
+    width: 100vw;
+    height: 100dvh;
     display: flex;
     justify-content: center;
     align-items: center;
     overflow: hidden;
+    position: relative;
 }
 
 #app {
     width: var(--w);
     height: var(--h);
+    flex-shrink: 0;
     position: relative;
-    /* 스크립트에서 계산된 스케일이 적용됨 */
-    transform-origin: center;
-    /* overflow: hidden; 을 제거하여 확대된 카드나 아우라가 잘리지 않게 함 */
+    transform-origin: center center; /* 기준점을 정중앙으로 고정 */
+    overflow: visible; /* 아우라와 확대 효과가 잘리지 않게 함 */
 }
 
-/* 2. 레이어 시스템 (412*914 일치) */
+/* 2. 레이어 설정 */
 .page {
     position: absolute;
     top: 0;
@@ -42,7 +41,6 @@ body, html {
     height: 100%;
     display: none;
     opacity: 0;
-    transition: 0.5s;
 }
 
     .page.active {
@@ -57,54 +55,62 @@ body, html {
     width: var(--w);
     height: var(--h);
     object-fit: cover;
-    pointer-events: none;
 }
 
-/* 3. 버튼 아우라 (잘림 방지) */
+/* 3. 무한 룰렛: 좌우 꽉 차게 조절 */
+.roulette-section {
+    position: absolute;
+    bottom: 180px;
+    left: 0;
+    width: var(--w);
+    height: 350px;
+    display: flex;
+    align-items: center;
+    overflow: visible;
+}
+
+.slider-container {
+    width: 100%;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    padding: 40px 0; /* 위아래 확대 공간 */
+}
+
+    .slider-container::-webkit-scrollbar {
+        display: none;
+    }
+
+/* 카드 트랙 여백 조정: 412px 안에서 3장이 잘 보이게 */
+.card-track {
+    display: flex;
+    padding: 0 calc(var(--w) / 2 - 68px);
+    overflow: visible;
+}
+
+.card-item {
+    flex: 0 0 137px;
+    width: 137px;
+    height: 210px;
+    scroll-snap-align: center;
+    transition: 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    filter: brightness(0.4);
+    transform: scale(0.85);
+}
+
+    .card-item.selected {
+        filter: brightness(1.2);
+        transform: scale(1.2);
+        z-index: 100;
+        filter: drop-shadow(0 0 20px rgba(255,215,0,0.6));
+    }
+
+/* 4. 아우라 효과 잘림 방지 */
 .btn-anchor {
     position: absolute;
     left: 50%;
     transform: translateX(-50%);
     z-index: 50;
     cursor: pointer;
-}
-
-.origin-btn {
-    display: block;
-    width: 280px;
-    height: auto;
-    position: relative;
-    z-index: 2;
-}
-
-.side-btn .origin-btn {
-    width: 160px;
-}
-
-/* 버튼 주변 빛 번짐 효과 (전방향으로 퍼지도록 여유 공간 확보) */
-.aura-effect {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    width: 200%;
-    height: 200%; /* 버튼보다 크게 설정 */
-    background: radial-gradient(circle, rgba(255,223,0,0.5) 0%, rgba(255,223,0,0) 70%);
-    z-index: 1;
-    animation: aura-glow 2s infinite;
-    pointer-events: none;
-}
-
-@keyframes aura-glow {
-    0%, 100% {
-        opacity: 0.3;
-        transform: translate(-50%, -50%) scale(0.8);
-    }
-
-    50% {
-        opacity: 0.7;
-        transform: translate(-50%, -50%) scale(1.1);
-    }
 }
 
 .main-pos {
@@ -119,88 +125,80 @@ body, html {
     bottom: 80px;
 }
 
-.final-btns {
+.origin-btn {
+    display: block;
+    width: 280px;
+    height: auto;
+    position: relative;
+    z-index: 2;
+}
+
+.aura-effect {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 250px;
+    height: 150px; /* 버튼 크기에 맞춰 조절 */
+    background: radial-gradient(circle, rgba(255,223,0,0.4) 0%, rgba(255,223,0,0) 70%);
+    z-index: 1;
+    animation: aura-glow 2s infinite;
+    pointer-events: none;
+}
+
+@keyframes aura-glow {
+    0%, 100% {
+        transform: translate(-50%, -50%) scale(0.9);
+        opacity: 0.4;
+    }
+
+    50% {
+        transform: translate(-50%, -50%) scale(1.2);
+        opacity: 0.7;
+    }
+}
+
+/* 5. 5페이지 버튼 (둘 다 보이게 수정) */
+.final-btns-row {
     position: absolute;
     bottom: 50px;
-    width: 100%;
+    left: 0;
+    width: var(--w);
     display: flex;
     justify-content: center;
-    gap: 15px;
+    gap: 10px;
+    z-index: 100;
 }
 
-/* 4. 무한 룰렛 (위아래 잘림 해결) */
-.roulette-section {
-    position: absolute;
-    bottom: 200px;
-    width: 100%;
-    height: 350px; /* 카드가 확대되어도 충분히 수용 가능한 높이 */
-    display: flex;
-    align-items: center;
-    overflow: visible; /* 자식 요소의 확장을 허용 */
-}
-
-.slider-container {
-    width: 100%;
-    overflow-x: auto;
-    scroll-snap-type: x mandatory;
-    padding: 50px 0;
-}
-    /* 패딩으로 확대 공간 확보 */
-    .slider-container::-webkit-scrollbar {
-        display: none;
-    }
-
-.card-track {
-    display: flex;
-    padding: 0 calc(var(--w) / 2 - 68px);
-    overflow: visible;
-}
-
-.card-item {
-    flex: 0 0 137px;
-    width: 137px;
-    height: 210px;
-    scroll-snap-align: center;
-    transition: 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-    filter: brightness(0.5);
-    transform: scale(0.85);
+.btn-mini-wrap {
     position: relative;
+    cursor: pointer;
+    width: 170px;
 }
-    /* 선택된 카드 확대 및 위아래 잘림 방지 */
-    .card-item.selected {
-        filter: brightness(1.2);
-        transform: scale(1.25);
-        z-index: 100;
-        filter: drop-shadow(0 0 20px rgba(255,215,0,0.8));
-    }
 
-/* 5. 빵빠레 (곡선 낙하) */
+.mini-btn-img {
+    width: 100%;
+    height: auto;
+    display: block;
+    position: relative;
+    z-index: 2;
+}
+
+/* 6. 빵빠레 (곡선 낙하) */
 .confetti {
     position: absolute;
-    z-index: 10;
-    animation: confetti-dance 4s linear forwards;
+    z-index: 50;
+    animation: confetti-fall 4s linear forwards;
 }
 
-@keyframes confetti-dance {
+@keyframes confetti-fall {
     0% {
         transform: translate(0, 0) rotate(0deg);
         opacity: 1;
     }
 
-    25% {
-        transform: translate(30px, 200px) rotate(90deg);
-    }
-
-    50% {
-        transform: translate(-30px, 450px) rotate(180deg);
-    }
-
-    75% {
-        transform: translate(30px, 700px) rotate(270deg);
-    }
-
     100% {
-        transform: translate(0, 950px) rotate(360deg);
+        transform: translate(var(--side), 950px) rotate(720deg);
         opacity: 0;
     }
 }
