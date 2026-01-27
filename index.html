@@ -10,6 +10,8 @@
 <body>
     <div id="stage">
         <div id="app">
+            <div id="transition-effect"></div>
+
             <section id="page-1" class="page active">
                 <img src="./images/bg_01.jpg" class="full-layer">
                 <img src="./images/gif/char_main_1.apng" class="full-layer">
@@ -27,7 +29,7 @@
                         <div class="card-track" id="track"></div>
                     </div>
                 </div>
-                <div class="btn-anchor pick-pos" onclick="pickCard()">
+                <div class="btn-anchor pick-pos inner-glow-btn" onclick="pickCard()">
                     <div class="aura-effect"></div>
                     <img src="./images/btn/btn_start.png" class="origin-btn">
                 </div>
@@ -35,7 +37,9 @@
 
             <section id="page-3" class="page">
                 <img src="./images/bg_03.jpg" class="full-layer">
-                <img src="./images/gif/char_load_1.apng" class="full-layer">
+                <div class="loading-particles"></div>
+                <img src="./images/gif/char_load_1.apng" class="full-layer glowing-char">
+                <div class="magic-loader"></div>
             </section>
 
             <section id="page-4" class="page">
@@ -50,7 +54,8 @@
             <section id="page-5" class="page">
                 <div id="capture-area">
                     <img id="res-bg-5" src="" class="full-layer">
-                    <img id="res-char-5" src="" class="full-layer">
+                    <div class="final-backlight"></div>
+                    <img id="res-char-5" src="" class="full-layer final-char-glow">
                     <div id="fanfare-box"></div>
                 </div>
                 <div class="final-btns-row">

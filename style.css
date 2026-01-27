@@ -12,7 +12,6 @@ body, html {
     overflow: hidden;
 }
 
-/* 1. 반응형 중앙 정렬 핵심: Stage가 App을 완벽하게 가둠 */
 #stage {
     width: 100vw;
     height: 100dvh;
@@ -28,11 +27,10 @@ body, html {
     height: var(--h);
     flex-shrink: 0;
     position: relative;
-    transform-origin: center center; /* 기준점을 정중앙으로 고정 */
-    overflow: visible; /* 아우라와 확대 효과가 잘리지 않게 함 */
+    transform-origin: center center;
+    overflow: visible;
 }
 
-/* 2. 레이어 설정 */
 .page {
     position: absolute;
     top: 0;
@@ -57,54 +55,7 @@ body, html {
     object-fit: cover;
 }
 
-/* 3. 무한 룰렛: 좌우 꽉 차게 조절 */
-.roulette-section {
-    position: absolute;
-    bottom: 180px;
-    left: 0;
-    width: var(--w);
-    height: 350px;
-    display: flex;
-    align-items: center;
-    overflow: visible;
-}
-
-.slider-container {
-    width: 100%;
-    overflow-x: auto;
-    scroll-snap-type: x mandatory;
-    padding: 40px 0; /* 위아래 확대 공간 */
-}
-
-    .slider-container::-webkit-scrollbar {
-        display: none;
-    }
-
-/* 카드 트랙 여백 조정: 412px 안에서 3장이 잘 보이게 */
-.card-track {
-    display: flex;
-    padding: 0 calc(var(--w) / 2 - 68px);
-    overflow: visible;
-}
-
-.card-item {
-    flex: 0 0 137px;
-    width: 137px;
-    height: 210px;
-    scroll-snap-align: center;
-    transition: 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-    filter: brightness(0.4);
-    transform: scale(0.85);
-}
-
-    .card-item.selected {
-        filter: brightness(1.2);
-        transform: scale(1.2);
-        z-index: 100;
-        filter: drop-shadow(0 0 20px rgba(255,215,0,0.6));
-    }
-
-/* 4. 아우라 효과 잘림 방지 */
+/* --- 버튼 관련 수정 --- */
 .btn-anchor {
     position: absolute;
     left: 50%;
@@ -113,8 +64,9 @@ body, html {
     cursor: pointer;
 }
 
+/* [요청 1] 메인 버튼 위치 5px 내림 (80 -> 75) */
 .main-pos {
-    bottom: 80px;
+    bottom: 75px;
 }
 
 .pick-pos {
@@ -133,47 +85,243 @@ body, html {
     z-index: 2;
 }
 
+/* [요청 2, 5] 아우라 효과를 과하지 않게 수정 */
 .aura-effect {
     position: absolute;
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
     width: 250px;
-    height: 150px; /* 버튼 크기에 맞춰 조절 */
+    height: 150px;
     background: radial-gradient(circle, rgba(255,223,0,0.4) 0%, rgba(255,223,0,0) 70%);
     z-index: 1;
-    animation: aura-glow 2s infinite;
+    animation: aura-glow 2s infinite alternate;
     pointer-events: none;
 }
 
 @keyframes aura-glow {
-    0%, 100% {
-        transform: translate(-50%, -50%) scale(0.9);
-        opacity: 0.4;
+    0% {
+        transform: translate(-50%, -50%) scale(0.95);
+        opacity: 0.5;
     }
 
-    50% {
-        transform: translate(-50%, -50%) scale(1.2);
-        opacity: 0.7;
+    100% {
+        transform: translate(-50%, -50%) scale(1.05);
+        opacity: 0.8;
     }
 }
 
-/* 5. 5페이지 버튼 (둘 다 보이게 수정) */
-.final-btns-row {
+.aura-effect.small {
+    width: 170px;
+    height: 110px;
+}
+
+/* [요청 3a] 카드 선택 버튼 내부 효과 추가 */
+.inner-glow-btn .origin-btn {
+    border-radius: 50px; /* 버튼 모양에 맞춰 조정 필요 */
+    box-shadow: inset 0 0 15px rgba(255, 215, 0, 0.6), 0 0 10px rgba(255,215,0,0.3);
+    animation: inner-pulse 1.5s infinite alternate;
+}
+
+@keyframes inner-pulse {
+    0% {
+        box-shadow: inset 0 0 10px rgba(255, 215, 0, 0.4);
+    }
+
+    100% {
+        box-shadow: inset 0 0 25px rgba(255, 215, 0, 0.8), 0 0 15px rgba(255,215,0,0.5);
+    }
+}
+
+/* --- [요청 3b] 화면 전환 특수 효과 --- */
+#transition-effect {
     position: absolute;
-    bottom: 80px;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) scale(0);
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    background: radial-gradient(circle, #fff 0%, rgba(255,215,0,0.8) 40%, transparent 70%);
+    opacity: 0;
+    z-index: 200;
+    pointer-events: none;
+}
+
+    #transition-effect.active {
+        animation: transition-burst 0.8s ease-out forwards;
+    }
+
+@keyframes transition-burst {
+    0% {
+        transform: translate(-50%, -50%) scale(0);
+        opacity: 1;
+    }
+
+    50% {
+        opacity: 1;
+    }
+
+    100% {
+        transform: translate(-50%, -50%) scale(15);
+        opacity: 0;
+    }
+}
+
+/* --- 룰렛 및 기타 --- */
+.roulette-section {
+    position: absolute;
+    bottom: 180px;
     left: 0;
     width: var(--w);
+    height: 350px;
+    display: flex;
+    align-items: center;
+    overflow: visible;
+}
+
+.slider-container {
+    width: 100%;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    padding: 40px 0;
+}
+
+    .slider-container::-webkit-scrollbar {
+        display: none;
+    }
+
+.card-track {
+    display: flex;
+    padding: 0 calc(var(--w) / 2 - 68px);
+    overflow: visible;
+}
+
+.card-item {
+    flex: 0 0 137px;
+    width: 137px;
+    height: 210px;
+    scroll-snap-align: center;
+    transition: 0.3s;
+    filter: brightness(0.4);
+    transform: scale(0.85);
+}
+
+    .card-item.selected {
+        filter: brightness(1.2);
+        transform: scale(1.2);
+        z-index: 100;
+        filter: drop-shadow(0 0 20px rgba(255,215,0,0.6));
+    }
+
+/* --- [요청 4] 로딩 페이지 효과 추가 --- */
+.magic-loader {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 120px;
+    height: 120px;
+    border: 6px solid rgba(255,215,0,0.3);
+    border-top: 6px solid #FFD700;
+    border-radius: 50%;
+    animation: spin 1.5s linear infinite;
+    z-index: 10;
+}
+
+@keyframes spin {
+    0% {
+        transform: translate(-50%, -50%) rotate(0deg);
+    }
+
+    100% {
+        transform: translate(-50%, -50%) rotate(360deg);
+    }
+}
+
+.glowing-char {
+    animation: char-glow 2s infinite alternate;
+}
+
+@keyframes char-glow {
+    from {
+        filter: drop-shadow(0 0 0 rgba(255,215,0,0));
+    }
+
+    to {
+        filter: drop-shadow(0 0 20px rgba(255,215,0,0.5));
+    }
+}
+
+.loading-particles {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-image: radial-gradient(#FFD700 1px, transparent 1px);
+    background-size: 50px 50px;
+    opacity: 0.3;
+    animation: particle-move 10s linear infinite;
+}
+
+@keyframes particle-move {
+    from {
+        background-position: 0 0;
+    }
+
+    to {
+        background-position: 100px 100px;
+    }
+}
+
+/* --- [요청 6] 최종 결과 추가 효과 --- */
+.final-backlight {
+    position: absolute;
+    top: 35%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 350px;
+    height: 350px;
+    background: radial-gradient(circle, rgba(255,255,200,0.4) 0%, rgba(255,215,0,0) 60%);
+    animation: backlight-pulse 3s infinite alternate;
+    z-index: 1;
+}
+
+@keyframes backlight-pulse {
+    from {
+        opacity: 0.3;
+        transform: translate(-50%, -50%) scale(0.9);
+    }
+
+    to {
+        opacity: 0.7;
+        transform: translate(-50%, -50%) scale(1.1);
+    }
+}
+
+.final-char-glow {
+    z-index: 2;
+    filter: drop-shadow(0 0 15px rgba(255,215,0,0.3));
+}
+
+.final-btns-row {
+    position: absolute;
+    bottom: 70px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: auto;
     display: flex;
     justify-content: center;
-    gap: 10px;
+    gap: 30px;
     z-index: 100;
 }
 
 .btn-mini-wrap {
     position: relative;
     cursor: pointer;
-    width: 160px;
+    width: 150px;
+    height: auto;
 }
 
 .mini-btn-img {
@@ -184,7 +332,6 @@ body, html {
     z-index: 2;
 }
 
-/* 6. 빵빠레 (곡선 낙하) */
 .confetti {
     position: absolute;
     z-index: 50;
