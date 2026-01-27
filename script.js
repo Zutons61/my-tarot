@@ -1,6 +1,5 @@
 let selectedIdx = 1;
 
-// 1. 페이지 전환 함수
 function nextPage(num) {
     const pages = document.querySelectorAll('.page');
     pages.forEach(p => p.classList.remove('active'));
@@ -11,15 +10,16 @@ function nextPage(num) {
         setTimeout(() => next.classList.add('active'), 50);
     }, 400);
 
-    if(num === 2) initSlider();
+    if (num === 2) initInfiniteSlider();
 }
 
-// 2. 무한 슬라이더 초기화 (카드 3장을 10세트 복제하여 루프 생성)
-function initSlider() {
+// 룰렛 무한 루프 핵심 로직
+function initInfiniteSlider() {
     const track = document.getElementById('track');
     track.innerHTML = '';
-    for(let i=0; i<10; i++) {
-        for(let j=1; j<=3; j++) {
+    // 카드 3장을 15세트 복제 (충분한 길이 확보)
+    for (let i = 0; i < 15; i++) {
+        for (let j = 1; j <= 3; j++) {
             const img = document.createElement('img');
             img.src = `./images/btn/btn_card_back${j}.png`;
             img.className = 'card-item';
@@ -27,37 +27,45 @@ function initSlider() {
             track.appendChild(img);
         }
     }
+
     const slider = document.getElementById('slider');
-    slider.scrollLeft = slider.scrollWidth / 3; // 중간 지점에서 시작
-    
+    // 초기 위치를 중간으로 설정
+    slider.scrollLeft = slider.scrollWidth / 2;
+
     slider.addEventListener('scroll', () => {
+        const scrollWidth = slider.scrollWidth;
+        const currentScroll = slider.scrollLeft;
+        
+        // 무한 루프: 양쪽 끝에 도달하기 전 중간으로 텔레포트
+        if (currentScroll < 100) {
+            slider.scrollLeft = scrollWidth / 2;
+        } else if (currentScroll > scrollWidth - window.innerWidth - 100) {
+            slider.scrollLeft = scrollWidth / 2;
+        }
+        
         updateActiveCard();
-        // 무한 루프 트릭: 끝에 닿으면 반대편으로 순간이동
-        if(slider.scrollLeft < 10) slider.scrollLeft = slider.scrollWidth / 3;
-        if(slider.scrollLeft > (slider.scrollWidth * 0.6)) slider.scrollLeft = slider.scrollWidth / 3;
     });
 }
 
 function updateActiveCard() {
     const cards = document.querySelectorAll('.card-item');
-    const centerX = document.getElementById('slider').scrollLeft + (window.innerWidth / 2);
+    const centerX = window.innerWidth / 2;
     cards.forEach(card => {
         const rect = card.getBoundingClientRect();
         const cardCenter = rect.left + rect.width / 2;
-        if(Math.abs(window.innerWidth/2 - cardCenter) < 50) {
+        if (Math.abs(centerX - cardCenter) < rect.width / 2) {
             card.classList.add('active');
-            selectedIdx = parseInt(card.dataset.id);
+            selectedIdx = parseInt(card.dataset.id); // 중앙 카드 번호 실시간 저장
         } else {
             card.classList.remove('active');
         }
     });
 }
 
-// 3. 카드 선택 및 로딩
 function pickCard() {
     nextPage(3);
     setTimeout(() => {
-        // 결과 이미지 셋팅
+        // 4, 5페이지 리소스 동적 매칭
         document.getElementById('res-bg-4').src = `./images/bg_res_4-${selectedIdx}.jpg`;
         document.getElementById('res-char-4').src = `./images/gif/char_check_${selectedIdx}.apng`;
         document.getElementById('res-bg-5').src = `./images/bg_res_5-${selectedIdx}.jpg`;
@@ -66,12 +74,11 @@ function pickCard() {
     }, 4000);
 }
 
-// 4. 저장 및 캡쳐 기능
 function saveImage() {
     const area = document.getElementById('capture-area');
     html2canvas(area, { useCORS: true }).then(canvas => {
         const link = document.createElement('a');
-        link.download = `fortune_jogom_${selectedIdx}.png`;
+        link.download = `jogom_tarot_${selectedIdx}.png`;
         link.href = canvas.toDataURL();
         link.click();
     });
