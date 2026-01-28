@@ -193,7 +193,7 @@ body, html {
 
 .card-track {
     display: flex;
-    padding: 0 calc(var(--w) / 2 - 68px);
+    padding: 0 calc((412px - 137px) / 2);
     overflow: visible;
 }
 

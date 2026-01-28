@@ -20,10 +20,13 @@ function nextPage(num) {
     if (num === 5) startFanfare();
 }
 
+// [수정] 무한 룰렛 - 스크롤 보정 범위 및 초기 위치 정밀화
 function initInfiniteSlider() {
     const track = document.getElementById('track');
+    if (!track) return;
+
     track.innerHTML = '';
-    const repeat = 50;
+    const repeat = 60; // 180장으로 대폭 늘려 연속 스크롤 대응 강화
     for (let i = 0; i < repeat; i++) {
         for (let j = 1; j <= 3; j++) {
             const img = document.createElement('img');
@@ -33,31 +36,67 @@ function initInfiniteSlider() {
             track.appendChild(img);
         }
     }
+
     const slider = document.getElementById('slider');
     const cardWidth = 137;
-    slider.scrollLeft = (slider.scrollWidth / 2) - ((slider.scrollWidth / 2) % (cardWidth * 3));
-    slider.addEventListener('scroll', () => {
-        const threshold = 1500;
-        if (slider.scrollLeft < threshold) slider.scrollLeft += (slider.scrollWidth / 3);
-        else if (slider.scrollLeft > slider.scrollWidth - threshold - 412) slider.scrollLeft -= (slider.scrollWidth / 3);
-        updateActiveCard();
-    });
+
+    // 초기 위치를 정확히 3의 배수 카드의 중앙 세트로 설정
+    const totalContentWidth = cardWidth * 3 * repeat;
+    slider.scrollLeft = (totalContentWidth / 2) - ((totalContentWidth / 2) % (cardWidth * 3));
+
+    slider.removeEventListener('scroll', handleScroll); // 중복 등록 방지
+    slider.addEventListener('scroll', handleScroll);
+
+    // 초기 실행
+    updateActiveCard();
+}
+
+function handleScroll() {
+    const slider = document.getElementById('slider');
+    const scrollWidth = slider.scrollWidth;
+    const threshold = scrollWidth * 0.2; // 20% 지점 도달 시 텔레포트
+
+    if (slider.scrollLeft < threshold) {
+        slider.scrollLeft += (scrollWidth / 3);
+    } else if (slider.scrollLeft > scrollWidth - threshold - 412) {
+        slider.scrollLeft -= (scrollWidth / 3);
+    }
+    updateActiveCard();
 }
 
 function updateActiveCard() {
-    const cards = document.querySelectorAll('.card-item');
     const slider = document.getElementById('slider');
-    const centerX = slider.getBoundingClientRect().left + (slider.offsetWidth / 2);
+    const cards = document.querySelectorAll('.card-item');
+    if (!slider || cards.length === 0) return;
+
+    // 슬라이더 컨테이너의 실제 화면상 수평 중앙 지점 계산
+    const sliderRect = slider.getBoundingClientRect();
+    const sliderCenterX = sliderRect.left + (sliderRect.width / 2);
+
+    let closestCard = null;
+    let minDistance = Infinity;
+
     cards.forEach(card => {
-        const rect = card.getBoundingClientRect();
-        const cardMid = rect.left + rect.width / 2;
-        if (Math.abs(centerX - cardMid) < 50) {
-            card.classList.add('selected');
-            selectedIdx = parseInt(card.dataset.id);
-        } else {
-            card.classList.remove('selected');
+        const cardRect = card.getBoundingClientRect();
+        const cardMidX = cardRect.left + (cardRect.width / 2);
+
+        // 슬라이더 중앙과 카드의 거리를 측정
+        const distance = Math.abs(sliderCenterX - cardMidX);
+
+        // 기존 클래스 일단 제거
+        card.classList.remove('selected');
+
+        if (distance < minDistance) {
+            minDistance = distance;
+            closestCard = card;
         }
     });
+
+    // 가장 중앙에 가까운 카드 하나만 선택 및 밝기 조절
+    if (closestCard) {
+        closestCard.classList.add('selected');
+        selectedIdx = parseInt(closestCard.dataset.id);
+    }
 }
 
 // [요청 3b] 카드 선택 버튼 클릭 시 특수 효과 후 페이지 이동
